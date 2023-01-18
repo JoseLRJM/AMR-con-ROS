@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+
+<robot name="champy_2-0" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- Arguments -->
+    <xacro:arg name="cam_pos_x"     default="-0.17" />
+    <xacro:arg name="cam_pos_y"     default="0.0" />
+    <xacro:arg name="cam_pos_z"     default="0.553" />
+    <xacro:arg name="cam_roll"      default="0.0" />
+    <xacro:arg name="cam_pitch"     default="0.0" />
+    <xacro:arg name="cam_yaw"       default="0.0" />
+
+<!-- Properties -->
+    <xacro:property name="M_PI"     value="3.1415926535897931" />
+    <xacro:property name="model"    value="zed2" />
+    <xacro:property name="baseline" value="0.12" />
+
+<!-- materiales -->
+    <material name="zed2_mat">
+        <color rgba="0.25 0.25 0.25 0.99"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+    </material>
+
+    <material name="white">
+        <color rgba="1 1 1 1"/>
+    </material>
+
+<!-- links -->
+   
+    <link name="base_footprint"/>
+    <link name="zed_left_camera_frame" />
+    <link name="zed_left_camera_optical_frame"/>
+    <link name="zed_right_camera_frame" />
+    <link name="zed_right_camera_optical_frame"/>
+    <link name="zed_baro_link" />
+    <link name="zed_mag_link" />
+    <link name="zed_temp_left_link" />
+    <link name="zed_temp_right_link" />
+
+    <link name="base_link">
+        <visual>
+        <geometry>
+            <box size="0.555 0.375 0.275"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="-0.207 0 0.11"/>
+        <material name="white"/>
+        </visual>
+    </link>
+
+    <link name="right_wheel_link">
+        <visual>
+        <geometry>
+            <cylinder length="0.096" radius="0.133"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <material name="blue"/>
+        </visual>
+    </link>
+
+    <link name="left_wheel_link">
+        <visual>
+        <geometry>
+            <cylinder length="0.096" radius="0.133"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <material name="blue"/>
+        </visual>
+    </link>
+
+    <link name="zed_camera_center">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://champy_2-0/urdf/models/zed2.stl" />
+            </geometry>
+            <material name="zed2_mat" />
+        </visual>
+    </link>
+
+    <link name="Rplidar_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.07" radius="0.05"/>
+            </geometry>
+            <material name="zed2_mat" />
+        </visual>
+    </link>
+
+    <link name="Realsenser_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.07" radius="0.05"/>
+            </geometry>
+            <material name="zed2_mat" />
+        </visual>
+    </link>
+
+<!-- Camera Center -->
+    <joint name="base_link_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin xyz="0 0 0.105" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="zed_camera_center_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="zed_camera_center"/>
+        <origin xyz="$(arg cam_pos_x) $(arg cam_pos_y) $(arg cam_pos_z)" rpy="$(arg cam_roll) $(arg cam_pitch) $(arg cam_yaw)" />
+    </joint>
+
+<!-- Left Camera -->
+    <joint name="zed_left_camera_joint" type="fixed">
+        <parent link="zed_camera_center"/>
+        <child link="zed_left_camera_frame"/>
+        <origin xyz="0 0.06 0" rpy="0 0 0" />
+    </joint>
+
+    <joint name="zed_left_camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-${M_PI/2} 0.0 -${M_PI/2}"/>
+        <parent link="zed_left_camera_frame"/>
+        <child link="zed_left_camera_optical_frame"/>
+    </joint>
+
+<!-- Right Camera -->
+    <joint name="zed_right_camera_joint" type="fixed">
+        <parent link="zed_camera_center"/>
+        <child link="zed_right_camera_frame"/>
+        <origin xyz="0 -0.06 0" rpy="0 0 0" />
+    </joint>
+
+    <joint name="zed_right_camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-${M_PI/2} 0.0 -${M_PI/2}"/>
+        <parent link="zed_right_camera_frame"/>
+        <child link="zed_right_camera_optical_frame"/>
+    </joint>
+<!-- ZED2 Sensors -->
+    <joint name="zed_mag_joint" type="fixed">
+        <parent link="zed_camera_center"/>
+        <child link="zed_mag_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <joint name="zed_baro_joint" type="fixed">
+        <parent link="zed_camera_center"/>
+        <child link="zed_baro_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <joint name="zed_temp_left_joint" type="fixed">
+        <parent link="zed_left_camera_frame"/>
+        <child link="zed_temp_left_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <joint name="zed_temp_right_joint" type="fixed">
+        <parent link="zed_right_camera_frame"/>
+        <child link="zed_temp_right_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+<!-- ruedas -->
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="right_wheel_link"/>
+        <origin xyz="0 -0.245 0" rpy="1.57 0 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="left_wheel_link"/>
+        <origin xyz="0 0.245 0" rpy="-1.57 0 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+<!-- Rplidar -->
+    <joint name="Rplidar_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="Rplidar_link"/>
+        <origin xyz="-0.085 0 0.285" rpy="0 0 0" />
+    </joint>
+
+    <joint name="Realsense_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="Realsenser_link"/>
+        <origin xyz="0.1 0 0.33" rpy="0 0 0" />
+    </joint>
+
+</robot>

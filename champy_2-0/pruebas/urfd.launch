@@ -1,0 +1,7 @@
+<launch>  
+  <node pkg="rviz" type="rviz" name="rviz" output="screen"/>
+  <param name="robot_description" command="$(find xacro)/xacro '$(find champy_2-0)/urdf/zed_descr.urdf.xacro'"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" required="true"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+</launch>

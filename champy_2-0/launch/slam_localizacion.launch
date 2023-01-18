@@ -1,0 +1,21 @@
+    
+<launch>
+   
+    <!-- RTABmap -->
+    <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" output="screen" args="" launch-prefix="">
+        <rosparam command="load" file="$(find champy_2-0)/params/rtabmap/rtabmap.yaml" />
+    
+        <remap from="rgb/image"         to="/zed/rgb/image_rect_color"/>
+        <remap from="depth/image"       to="/zed/depth/depth_registered"/>
+        <remap from="rgb/camera_info"   to="/zed/rgb/camera_info"/>
+        <remap from="grid_map"          to="/map" />
+        <remap from="odom"              to="/zed/odom"/>
+        <remap from="scan"              to="/scan"/>
+        <remap from="depth_camera_info_topic" to="/zed/depth/camera_info" />
+        <param name="Mem/IncrementalMemory" type="string" value="false"/>
+        <param name="Mem/InitWMWithAllNodes" type="string" value="true"/>
+        <param name="Marker\MaxRange" value="2"/>
+    </node>
+    <node name="robot_pose_publisher" pkg="robot_pose_publisher" output="screen" type="robot_pose_publisher"/> 
+
+</launch>

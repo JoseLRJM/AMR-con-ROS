@@ -1,0 +1,10 @@
+#goal         
+float64 dist_from_tag
+int64 marker
+---
+#result
+float64 th_fin
+float64 x_fin
+---
+#feedback
+float64 x_current

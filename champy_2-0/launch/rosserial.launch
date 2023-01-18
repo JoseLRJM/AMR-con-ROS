@@ -1,0 +1,38 @@
+
+<launch>
+
+    <!--descripcion del robot TF-->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find champy_2-0)/urdf/champy_2-0.urdf.xacro'"/>
+    <node name="champy_robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" required="true"/>
+    
+    <!-- RPLIDAR -->
+    <node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+        <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>  
+        <param name="serial_baudrate"     type="int"    value="256000"/>
+        <param name="frame_id"            type="string" value="Rplidar_link"/>
+        <param name="inverted"            type="bool"   value="true"/>
+        <param name="angle_compensate"    type="bool"   value="true"/>
+    </node>
+
+    <!-- CAMARA ZED-->
+
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_map" clear_params="true">
+        <rosparam command="load" file="$(find champy_2-0)/params/ekf/fusion.yaml" />
+    </node>  
+    <node name="zed" pkg="zed_wrapper" type="zed_wrapper_node" output="screen" required="true">
+        <rosparam file="$(find champy_2-0)/params/camara_zed_2/zed.yaml" command="load" />
+        <param name="svo_file"                          value="" />
+        <param name="stream"                            value="" />
+    </node>
+
+    <node pkg="champy_2-0" type="wheel_odom.py" name="odom_wheel_node"/>
+    
+    <!--due_core -->
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+        <param name="port" value="/dev/ttyTHS0"/>
+        <param name="baud" value="250000"/>
+    </node>
+
+    <node pkg="rosserial_server" type="socket_node" name="tcp"/>
+
+</launch>

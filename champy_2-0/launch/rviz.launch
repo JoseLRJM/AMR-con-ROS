@@ -1,0 +1,4 @@
+   
+<launch>   
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find champy_2-0)/champy.rviz" output="screen" /> 
+</launch>

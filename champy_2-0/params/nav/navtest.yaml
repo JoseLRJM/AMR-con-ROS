@@ -1,0 +1,157 @@
+  DWAPlannerROS: {
+    acc_lim_theta: 12.0, 
+    acc_lim_trans: 0.1, 
+    acc_lim_x: 5, 
+    acc_lim_y: 2.5,
+    angular_sim_granularity: 0.05, 
+    forward_point_distance: 0.7, 
+    goal_distance_bias:  1.5,
+    max_scaling_factor: 2.0, 
+    max_vel_theta: 1.0, 
+    max_vel_trans: 1.0, # 1 
+    max_vel_x: 1.55,
+    max_vel_y: 0.0, 
+    min_vel_theta: 0.3, 
+    min_vel_trans: 0.18, # 0.18
+    min_vel_x: 0.0, #0.0 
+    min_vel_y: 0.0,
+    occdist_scale: 0.03,
+    oscillation_reset_angle: 0.8, 
+    oscillation_reset_dist: 0.3,
+    path_distance_bias: 7.91, 
+    prune_plan: true, 
+    restore_defaults: false, 
+    scaling_speed: 0.9, 
+    sim_granularity: 0.025, 
+    sim_time: 2.5, 
+    stop_time_buffer: 0.8, 
+    theta_stopped_vel: 0.07, 
+    trans_stopped_vel: 0.07, 
+    twirling_scale: 0.0, 
+    use_dwa: true, 
+    vth_samples: 15, 
+    vx_samples: 15,
+    vy_samples: 1, 
+    xy_goal_tolerance: 0.38, 
+    yaw_goal_tolerance: 0.25,
+    latch_xy_goal_tolerance: true }
+
+  GlobalPlanner: {
+    cost_factor: 4.0, 
+    lethal_cost: 253, 
+    neutral_cost: 117, 
+    orientation_mode: 1,
+    orientation_window_size: 1, 
+    publish_potential: true}
+
+  allow_unknown: false
+  base_global_planner: global_planner/GlobalPlanner
+  base_local_planner: dwa_local_planner/DWAPlannerROS
+  clearing_rotation_allowed: false
+  conservative_reset: {reset_distance: 3.0}
+  conservative_reset_dist: 3.0
+  controller_frequency: 15.0
+  controller_patience: 15.0
+  make_plan_add_unreachable_goal: true
+  make_plan_clear_costmap: true
+  max_planning_retries: 1
+  oscillation_distance: 0.3
+  oscillation_timeout: 0.0
+  planner_frequency: 6.0
+  planner_patience: 5.0
+
+  aggressive_reset: {reset_distance: 1.84}
+
+  global_costmap:
+    NavfnROS: {allow_unknown: false}
+    aggressive_clear:
+      layer_names: [obstacle_layer]
+      reset_distance: 10
+    conservative_clear:
+      layer_names: [obstacle_layer]
+      reset_distance: 50
+    controller_patience: 2.0
+    footprint: '[[0.25,0.29],[0.25,-0.29],[-0.45,-0.23],[-0.45,0.23]]'
+    footprint_padding: 0.0 #0.32 #0.37
+    global_frame: map
+    height: 10
+    inflation_layer: {cost_scaling_factor: 10.0, enabled: true, inflate_unknown: true,
+      inflation_radius: 1.5}
+    obstacle_layer:
+      combination_method: 1
+      enabled: true
+      footprint_clearing_enabled: true
+      max_obstacle_height: 2.0
+      observation_sources: point_cloud_sensor
+      point_cloud_sensor: {clearing: true, data_type: LaserScan, expected_update_rate: 7,
+        inf_is_valid: true, marking: true, obstacle_range: 5.0, raytrace_range: 5.0, #40
+        sensor_frame: Rplidar_link, topic: /scan_fus}
+    origin_x: 0.0
+    origin_y: 0.0
+    plugins:
+    - {name: static_layer, type: 'costmap_2d::StaticLayer'}
+    - {name: obstacle_layer, type: 'costmap_2d::ObstacleLayer'}
+    - {name: inflation_layer, type: 'costmap_2d::InflationLayer'}
+    publish_frequency: 5.0
+    recovery_behaviors:
+    - {name: conservative_clear, type: clear_costmap_recovery/ClearCostmapRecovery}
+    - {name: aggressive_clear, type: clear_costmap_recovery/ClearCostmapRecovery}
+    resolution: 0.1
+    robot_base_frame: base_footprint
+    robot_radius: 0.0 #0.46
+    rolling_window: false
+    static_layer: {enabled: true, map_topic: map, subscribe_to_updates: true} #map
+    static_map: true
+    transform_tolerance: 1.0
+    update_frequency: 5.0
+    width: 10
+
+  local_costmap:
+    NavfnROS: {allow_unknown: false}
+    aggressive_clear:
+      layer_names: [obstacle_layer]
+      reset_distance: 10
+    conservative_clear:
+      layer_names: [obstacle_layer]
+      reset_distance: 50
+    controller_patience: 2.0
+    footprint: '[[0.25,0.29],[0.25,-0.29],[-0.45,-0.23],[-0.45,0.23]]'
+    footprint_padding: 0.0 #0.3
+    global_frame: map
+    height: 6
+    inflation_layer: {cost_scaling_factor: 6.0, enabled: true, inflate_unknown: true, 
+    inflation_radius: 1.5}
+    obstacle_layer:
+      combination_method: 1
+      enabled: true
+      footprint_clearing_enabled: false
+      max_obstacle_height: 2.0
+      observation_sources: point_cloud_sensor
+      point_cloud_sensor: {clearing: true, data_type: LaserScan, expected_update_rate: 7,
+        inf_is_valid: true, marking: true, obstacle_range: 5.0, raytrace_range: 5.0,
+        sensor_frame: Rplidar_link, topic: /scan_fus}
+    origin_x: -3.0
+    origin_y: -3.0
+    plugins:
+    - {name: obstacle_layer, type: 'costmap_2d::ObstacleLayer'}
+    - {name: inflation_layer, type: 'costmap_2d::InflationLayer'}
+    publish_frequency: 10.0
+    recovery_behaviors:
+    - {name: conservative_clear, type: clear_costmap_recovery/ClearCostmapRecovery}
+    - {name: aggressive_clear, type: clear_costmap_recovery/ClearCostmapRecovery}
+    resolution: 0.1
+    robot_base_frame: base_footprint
+    robot_radius: 0.0 #0.35 #0.46
+    rolling_window: true
+    static_layer: {map_topic: map, subscribe_to_updates: true}
+    static_map: false
+    transform_tolerance: 1.0
+    update_frequency: 10.0
+    width: 6
+  
+  plugins:
+  - {name: static_layer, type: 'rtabmap_ros::StaticLayer'}
+  - {name: inflation_layer, type: 'costmap_2d::InflationLayer'}
+  recovery_bahavior_enabled: true
+  restore_defaults: false
+  shutdown_costmaps: false

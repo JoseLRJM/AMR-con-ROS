@@ -1,0 +1,19 @@
+   
+<launch>
+  <group ns="planner">
+    <remap from="/planner/openni_points" to="/scan_mod"/>
+      <remap from="/planner/scan" to="/scan_fus"/>
+      <remap from="/planner/map" to="/map_m"/>
+      <remap from="/planner/move_base_simple/goal" to="/move_base_simple/goal"/>
+      <remap from="/planner/odom" to="/odometry/filtered"/>
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+         <rosparam file="$(find champy_2-0)/params/nav/navtest.yaml" command="load"/>
+         <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+         <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+
+    </node>
+  </group>
+  <node pkg="champy_action_msgs" type="parking_v3.py" name="Parking_server_node"/>
+  <node pkg="champy_2-0" type="mod_auto.py" name="mod_auto"/>
+</launch>
